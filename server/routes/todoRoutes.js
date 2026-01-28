@@ -1,8 +1,16 @@
 const router = require('express').Router()
+const z = require('zod')
 const { Todo } = require('../config/db')
+const { createTodo, updateTodo } = require('../types')
 
-router.post('/', async (req, res) => {
+router.post('/todo', async (req, res) => {
     const {title, description} = req.body
+    const validation = createTodo.safeParse({title, description})
+    if(!validation.success) {
+        return res.status(411).json({
+            msg: 'you sent the wrong inputs'
+        })
+    }
     try {
         const todo = await Todo.create({
             title: title,
@@ -21,7 +29,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.get('/', async (req, res) => {
+router.get('/todos', async (req, res) => {
     try {
         const todos = await Todo.find({})
         return res.status(201).json({
@@ -35,10 +43,20 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/completed/:id', async (req, res) => {
     const todoId = req.params.id
     const {title, description, completed} = req.body
-
+    const validation = updateTodo.safeParse({
+        todoId,
+        title,
+        description,
+        completed
+    })
+    if (!validation.success) {
+        return res.status(411).json({
+            msg: 'you sent the wrong inputs.'
+        })
+    }
     try {
         await Todo.findById({
             _id: todoId
@@ -51,7 +69,7 @@ router.put('/:id', async (req, res) => {
     }
     try {
         await Todo.updateOne({
-            todoId
+            _id: todoId
         }, {
             title: title,
             description: description,
