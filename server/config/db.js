@@ -8,7 +8,7 @@ mongoose
 const TodoSchema = new mongoose.Schema({
     title: {type: String, required: true},
     description: {type: String, required: true},
-    completed: Boolean
+    completed: {type: Boolean}
 })
 
 const Todo = mongoose.model('Todo', TodoSchema)
