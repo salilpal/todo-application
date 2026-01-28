@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const z = require('zod')
 const { Todo } = require('../config/db')
 const { createTodo, updateTodo } = require('../types')
 
@@ -108,6 +107,21 @@ router.put('/completed', async (req, res) => {
     }
 })
 
+// a route to delete all todos
+router.delete('/deleteall', async (req, res) => {
+    try {
+        await Todo.deleteMany({})
+        return res.status(201).json({
+            msg: 'all todos deleted successfully'
+        })
+    } catch (e) {
+        return res.status(401).json({
+            msg: 'error deleting all todos',
+            error: e.message
+        })
+    }
+})
+
 // a route to delete a specific todo
 router.delete('/:id', async (req, res) => {
     const todoId = req.params.id
@@ -131,21 +145,6 @@ router.delete('/:id', async (req, res) => {
     } catch (e) {
         return res.status(400).json({
             msg: 'error deleting todo',
-            error: e.message
-        })
-    }
-})
-
-// a route to delete all todos
-router.delete('/deleteall', async (req, res) => {
-    try {
-        await Todo.deleteMany({})
-        return res.status(201).json({
-            msg: 'all todos deleted successfully'
-        })
-    } catch (e) {
-        return res.status(401).json({
-            msg: 'error deleting all todos',
             error: e.message
         })
     }
