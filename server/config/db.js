@@ -11,8 +11,16 @@ const TodoSchema = new mongoose.Schema({
     completed: {type: Boolean}
 })
 
+const UserSchema = new mongoose.Schema({
+    username: {type: String, unique: true},
+    password: {type: String},
+    isAdmin: Boolean
+})
+
 const Todo = mongoose.model('Todo', TodoSchema)
+const User = mongoose.model('User', UserSchema)
 
 module.exports = {
-    Todo
+    Todo,
+    User
 }
