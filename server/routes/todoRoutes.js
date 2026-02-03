@@ -1,6 +1,9 @@
 const router = require('express').Router()
 const { Todo } = require('../config/db')
 const { createTodo, updateTodo } = require('../types')
+const { userVerification } = require('../middleware/user')
+
+router.use(userVerification)
 
 // route to add a todo
 router.post('/todo', async (req, res) => {
